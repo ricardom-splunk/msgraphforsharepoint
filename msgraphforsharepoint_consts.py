@@ -33,6 +33,16 @@ MS_SHAREPOINT_JSON_DRIVE_CHILDREN_COUNT = "drive_children_count"
 # URLs and Endpoints
 MS_GRAPH_BASE_URL = "https://graph.microsoft.com/v1.0"
 MS_SERVER_TOKEN_URL = "https://login.microsoftonline.com/{0}/oauth2/v2.0/token"
+
+# GCC-High URLs
+MS_GRAPH_BASE_URL_GCC_HIGH = "https://graph.microsoft.us/v1.0"
+MS_SERVER_TOKEN_URL_GCC_HIGH = "https://login.microsoftonline.us/{0}/oauth2/v2.0/token"
+MS_GRAPH_SCOPE_GCC_HIGH = "https://graph.microsoft.us/.default"
+
+# Cloud environment config values
+MS_SHAREPOINT_CONFIG_CLOUD_ENVIRONMENT = "cloud_environment"
+MS_SHAREPOINT_CLOUD_COMMERCIAL = "commercial"
+MS_SHAREPOINT_CLOUD_GCC_HIGH = "gcc_high"
 MS_TEST_CONNECTIVITY_ENDPOINT = "/sites/root"
 MS_LIST_SITES_ENDPOINT = "/sites"
 MS_LIST_LISTS_ENDPOINT = "/sites/{site_id}/lists"
