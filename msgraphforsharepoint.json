@@ -64,6 +64,16 @@
             "data_type": "password",
             "required": true,
             "order": 5
+        },
+        "cloud_environment": {
+            "description": "Cloud Environment",
+            "data_type": "string",
+            "value_list": [
+                "commercial",
+                "gcc_high"
+            ],
+            "default": "commercial",
+            "order": 6
         }
     },
     "actions": [

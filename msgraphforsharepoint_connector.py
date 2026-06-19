@@ -192,6 +192,9 @@ class MsGraphForSharepointConnector(BaseConnector):
         self._tenant = None
         self._state = None
         self._base_url = None
+        self._token_url = None
+        self._graph_scope = None
+        self._login_base_url = None
         self._access_token = None
         self._admin_consent = None
         self._site_id = None
@@ -444,10 +447,10 @@ class MsGraphForSharepointConnector(BaseConnector):
             "client_id": self._client_id,
             "client_secret": self._client_secret,
             "grant_type": "client_credentials",
-            "scope": "https://graph.microsoft.com/.default",
+            "scope": self._graph_scope,
         }
 
-        req_url = MS_SERVER_TOKEN_URL.format(self._tenant)
+        req_url = self._token_url.format(self._tenant)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
         ret_val, resp_json = self._make_rest_call(req_url, action_result, headers=headers, data=data, method="post")
@@ -614,7 +617,7 @@ class MsGraphForSharepointConnector(BaseConnector):
         self.save_progress("Using OAuth Redirect URL as:")
         self.save_progress(app_rest_url)
 
-        admin_consent_url = f"https://login.microsoftonline.com/{self._tenant}/adminconsent?client_id={self._client_id}&redirect_uri={app_rest_url}&state={self.get_asset_id()}"
+        admin_consent_url = f"{self._login_base_url}/{self._tenant}/adminconsent?client_id={self._client_id}&redirect_uri={app_rest_url}&state={self.get_asset_id()}"
         self.save_progress("Please connect to the following URL from a different tab to continue the connectivity process")
         self.save_progress(admin_consent_url)
         self.save_progress("Waiting for Admin Consent to complete")
@@ -1108,7 +1111,17 @@ class MsGraphForSharepointConnector(BaseConnector):
                 self.error_print(MS_SHAREPOINT_DECRYPTION_ERROR, e)
                 self._access_token = None
 
-        self._base_url = MS_GRAPH_BASE_URL
+        cloud_env = config.get(MS_SHAREPOINT_CONFIG_CLOUD_ENVIRONMENT, MS_SHAREPOINT_CLOUD_COMMERCIAL)
+        if cloud_env == MS_SHAREPOINT_CLOUD_GCC_HIGH:
+            self._base_url = MS_GRAPH_BASE_URL_GCC_HIGH
+            self._token_url = MS_SERVER_TOKEN_URL_GCC_HIGH
+            self._graph_scope = MS_GRAPH_SCOPE_GCC_HIGH
+            self._login_base_url = "https://login.microsoftonline.us"
+        else:
+            self._base_url = MS_GRAPH_BASE_URL
+            self._token_url = MS_SERVER_TOKEN_URL
+            self._graph_scope = "https://graph.microsoft.com/.default"
+            self._login_base_url = "https://login.microsoftonline.com"
 
         return phantom.APP_SUCCESS
 
